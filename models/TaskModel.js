@@ -43,7 +43,7 @@ const TaskSchema = Schema(
       required: false,
     },
   },
-  { timeStamps: true }
+  { timestamps: true }
 );
 
 const TaskModel = model("tasks", TaskSchema);
