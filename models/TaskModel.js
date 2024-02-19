@@ -17,7 +17,7 @@ const TaskSchema = Schema(
     status: {
       type: String,
       required: false,
-      enum: ["pending", "completed"],
+      enum: ["pending", "inProgress", "completed"],
     },
     priority: {
       type: String,
@@ -42,6 +42,9 @@ const TaskSchema = Schema(
       ref: "categories",
       required: false,
     },
+    dependencies: [
+      { type: Schema.Types.ObjectId, ref: "tasks", required: false },
+    ],
   },
   { timestamps: true }
 );

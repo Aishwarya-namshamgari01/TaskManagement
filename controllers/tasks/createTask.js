@@ -14,6 +14,7 @@ const createTask = async (req, res, next) => {
         comments: req.body.comments,
         userId: req.body.userId,
         categoryId: req.body.categoryId,
+        dependencies: req.body.dependencies,
       });
       const result = await task.save();
       res.status(200).json({ msg: "Task created successfully" });

@@ -10,7 +10,7 @@ const createTaskValidation = [
     .isString()
     .withMessage("Name should be String"),
 
-  body("status").isIn(["pending", "completed"]).optional(),
+  body("status").isIn(["pending", "inProgress", "completed"]).optional(),
   body("priority").isIn(["low", "medium", "high"]).optional(),
   body("comments").optional(),
   body("dueDate").optional(),
@@ -30,6 +30,14 @@ const createTaskValidation = [
       const categoryExists = await CategoryModel.findOne({ _id: categoryId });
       if (!categoryExists) return Promise.reject("Category doesn't exists");
     }),
+  body("dependencies")
+    .isArray()
+    .withMessage("depencies should be array")
+    .optional(),
+
+  body("dependencies.*")
+    .isMongoId()
+    .withMessage("It should be valid object id"),
 ];
 
 export default createTaskValidation;

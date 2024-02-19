@@ -12,7 +12,20 @@ const updateTaskValidation = [
     if (!task) return Promise.reject("Task doesnot exists");
   }),
   body("name").optional(),
-  body("status").isIn(["pending", "completed"]).optional(),
+  body("status")
+    .isIn(["pending", "inProgress", "completed"])
+    .optional()
+    .custom(async (status, { req }) => {
+      const { dependencies } = req.body;
+      const completed = dependencies.every((item) => {
+        return item.status === "completed";
+      });
+      if (status === "completed" && !completed) {
+        return Promise.reject(
+          "All the dependencies should be completed. then only you can move this to completed"
+        );
+      }
+    }),
   body("priority").isIn(["low", "medium", "high"]).optional(),
   body("comments").optional(),
   body("dueDate").optional(),
@@ -33,6 +46,15 @@ const updateTaskValidation = [
       const categoryExists = await CategoryModel.findOne({ _id: categoryId });
       if (!categoryExists) return Promise.reject("Category doesn't exists");
     }),
+
+  body("dependencies")
+    .isArray()
+    .optional()
+    .custom(async (value, { req }) => {
+      const exists = value.includes(req.params.taskId);
+      if (exists) return Promise.reject("Task itself can't be a dependency");
+    }),
+  body("dependencies.*").isMongoId().withMessage("it should be valid mongo id"),
 ];
 
 export default updateTaskValidation;

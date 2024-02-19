@@ -14,6 +14,7 @@ const updateTaskById = async (req, res, next) => {
       comments: req.body?.comments,
       userId: req.body?.userId,
       categoryId: req.body?.categoryId,
+      dependencies: req.body?.dependencies,
     };
     if (role === "ADMIN") {
       const result = await TaskModel.updateOne(
