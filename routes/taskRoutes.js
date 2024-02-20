@@ -16,6 +16,12 @@ import updateTaskValidation from "../validaters/tasks/updateTaskValidation.js";
 import validateTaskId from "../validaters/tasks/validateTaskId.js";
 import getTasksByCategoryIdValidation from "../validaters/tasks/getTasksByCategoryIdValidation.js";
 import getTasksByUserIdValidation from "../validaters/tasks/getTasksByUserIdValidation.js";
+import addCommentValidation from "../validaters/comments/addCommentValidation.js";
+import addComment from "../controllers/comments/addComment.js";
+import createSubTaskValidation from "../validaters/subTasks/createSubTaskValidation.js";
+import createSubTask from "../controllers/subTasks/createSubTask.js";
+import updateSubTask from "../controllers/subTasks/updateSubTask.js";
+import updateSubTaskValidation from "../validaters/subTasks/updateSubTaskValidation.js";
 
 const router = Router();
 router.post(
@@ -72,6 +78,30 @@ router.post(
   assignTaskValidation,
   validationErrorHandler,
   assignTask
+);
+
+router.patch(
+  "/addComment/:taskId",
+  verifyToken,
+  addCommentValidation,
+  validationErrorHandler,
+  addComment
+);
+
+router.patch(
+  "/createSubTask/:taskId",
+  verifyToken,
+  createSubTaskValidation,
+  validationErrorHandler,
+  createSubTask
+);
+
+router.patch(
+  "/updateSubTask/:taskId",
+  verifyToken,
+  updateSubTaskValidation,
+  validationErrorHandler,
+  updateSubTask
 );
 
 export { router as TaskRouter };

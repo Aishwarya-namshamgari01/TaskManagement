@@ -1,4 +1,6 @@
 import { Schema, model } from "mongoose";
+import CommentSchema from "./CommentSchema.js";
+import SubTasksSchema from "./SubTasksSchema.js";
 
 const TaskSchema = Schema(
   {
@@ -28,10 +30,7 @@ const TaskSchema = Schema(
       type: Array,
       required: false,
     },
-    comments: {
-      type: Array,
-      required: false,
-    },
+    comments: [CommentSchema],
     userId: {
       type: Schema.Types.ObjectId,
       ref: "users",
@@ -42,9 +41,13 @@ const TaskSchema = Schema(
       ref: "categories",
       required: false,
     },
+    // Used for establishing relationships between tasks, defining the order of task execution, and managing dependencies.
     dependencies: [
       { type: Schema.Types.ObjectId, ref: "tasks", required: false },
     ],
+
+    // Used for organizing and managing related data within a document, such as subtasks, comments, or other nested structures
+    subTasks: [SubTasksSchema]
   },
   { timestamps: true }
 );

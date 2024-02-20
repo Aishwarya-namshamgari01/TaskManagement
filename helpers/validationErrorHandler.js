@@ -2,7 +2,7 @@ import { validationResult } from "express-validator";
 
 const validationErrorHandler = (req, res, next) => {
   const error = validationResult(req);
-  console.log({ errse: error });
+  // console.log({ errse: error });
   if (error.isEmpty()) {
     next();
   } else {
