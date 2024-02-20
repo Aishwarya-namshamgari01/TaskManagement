@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
 import TaskModel from "../../models/TaskModel.js";
+import { matchedData } from "express-validator";
 
 const assignTask = async (req, res, next) => {
   try {
     const role = req.user.role;
-    if (role === "ADMIN" || req.user._id.toString() === req.body.userId) {
-      const taskId = req.body.taskId;
+    const requestedData = matchedData(req);
+    if (role === "ADMIN" || req.user._id.toString() === requestedData.userId) {
+      const taskId = requestedData.taskId;
       const updatedResult = await TaskModel.findByIdAndUpdate(
         { _id: taskId },
-        { userId: req.body.userId },
+        { userId: requestedData.userId },
         { new: true }
       );
       if (updatedResult) {

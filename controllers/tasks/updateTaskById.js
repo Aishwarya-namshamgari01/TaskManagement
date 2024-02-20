@@ -1,20 +1,33 @@
+import { matchedData } from "express-validator";
 import TaskModel from "../../models/TaskModel.js";
 
 const updateTaskById = async (req, res, next) => {
   try {
     const taskId = req.params.taskId;
     const role = req.user.role;
+    const requestedData = matchedData(req);
+    const {
+      name,
+      description,
+      dueDate,
+      status,
+      priority,
+      comments,
+      userId,
+      categoryId,
+      dependencies,
+    } = requestedData;
     const filter = {
-      name: req.body?.name,
-      description: req.body?.description,
-      dueDate: req.body?.dueDate,
-      status: req.body?.status,
+      name: name,
+      description: description,
+      dueDate: dueDate,
+      status: status,
       priority: req.body.priority,
       attachments: req?.files,
-      comments: req.body?.comments,
-      userId: req.body?.userId,
-      categoryId: req.body?.categoryId,
-      dependencies: req.body?.dependencies,
+      comments: comments,
+      userId: userId,
+      categoryId: categoryId,
+      dependencies: dependencies,
     };
     if (role === "ADMIN") {
       const result = await TaskModel.updateOne(

@@ -1,11 +1,13 @@
+import { matchedData } from "express-validator";
 import TaskModel from "../../models/TaskModel.js";
 
 const addComment = async (req, res, next) => {
   try {
     const { taskId } = req.params;
-    const { comment, user } = req.body;
+    const requestedData = matchedData(req);
+    const { comment, user } = requestedData;
     const task = await TaskModel.findOne({ _id: taskId });
-    if (task?.userId === user) {
+    if (task?.userId.toString() === user) {
       const updatedResult = await TaskModel.findByIdAndUpdate(
         {
           _id: taskId,

@@ -1,19 +1,21 @@
+import { matchedData } from "express-validator";
 import UserModel from "../../models/UserModel.js";
 
 const updateUserById = async (req, res, next) => {
   const userId = req.params.userId;
   const role = req.user.role;
+  const requestedData = matchedData(req);
   try {
     if (role === "ADMIN" || req.user._id === userId) {
       const updatedResult = await UserModel.updateOne(
         { _id: userId },
         {
           $set: {
-            name: req.body.name,
-            email: req.body.email,
-            role: req.body.role,
-            bio: req.body.bio,
-            profilePicture: req.body.image,
+            name: requestedData.name,
+            email: requestedData.email,
+            role: requestedData.role,
+            bio: requestedData.bio,
+            profilePicture: req?.file?.path,
           },
         }
       );

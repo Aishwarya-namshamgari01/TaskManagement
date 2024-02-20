@@ -1,9 +1,12 @@
+import { matchedData } from "express-validator";
 import CategoryModel from "../../models/CategoryModel.js";
 
 const updateCategoryById = async (req, res, next) => {
   try {
     const categoryId = req.params.categoryId;
     const role = req.user.role;
+    const requestedData = matchedData(req);
+    const { name, description, color } = requestedData;
     if (role === "ADMIN") {
       const result = await CategoryModel.updateOne(
         {
@@ -11,9 +14,9 @@ const updateCategoryById = async (req, res, next) => {
         },
         {
           $set: {
-            name: req.body.name,
-            description: req.body.description,
-            color: req.body.color,
+            name: name,
+            description: description,
+            color: color,
             icon: req?.file?.path,
           },
         }
