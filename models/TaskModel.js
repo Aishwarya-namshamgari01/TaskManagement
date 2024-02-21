@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import CommentSchema from "./CommentSchema.js";
 import SubTasksSchema from "./SubTasksSchema.js";
+import TaskHistorySchema from "./TaskHistorySchema.js";
 
 const TaskSchema = Schema(
   {
@@ -47,7 +48,11 @@ const TaskSchema = Schema(
     ],
 
     // Used for organizing and managing related data within a document, such as subtasks, comments, or other nested structures
-    subTasks: [SubTasksSchema]
+    subTasks: [SubTasksSchema],
+
+    //	Keep a log of changes made to tasks.
+
+    taskHistory: [TaskHistorySchema],
   },
   { timestamps: true }
 );

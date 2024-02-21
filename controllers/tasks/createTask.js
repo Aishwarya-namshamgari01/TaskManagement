@@ -15,7 +15,8 @@ const createTask = async (req, res, next) => {
       userId,
       categoryId,
       dependencies,
-    } = requestedData;
+    } = requestedData;    
+
     if (role === "ADMIN" || req.user._id === userId) {
       const task = new TaskModel({
         name: name,

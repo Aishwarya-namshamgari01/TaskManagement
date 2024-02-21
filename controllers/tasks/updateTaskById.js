@@ -22,13 +22,36 @@ const updateTaskById = async (req, res, next) => {
       description: description,
       dueDate: dueDate,
       status: status,
-      priority: req.body.priority,
+      priority: priority,
       attachments: req?.files,
       comments: comments,
       userId: userId,
       categoryId: categoryId,
       dependencies: dependencies,
     };
+    const task = await TaskModel.findOne({ _id: taskId });
+    let changes = [];
+    if (name && name !== task.name) {
+      changes.push(`Name changed from ${task.name} to ${name} `);
+    }
+    if (description && description !== task.description) {
+      changes.push(
+        `Description changed from ${task.description} to ${description} `
+      );
+    }
+    if (dueDate && dueDate !== task.dueDate) {
+      changes.push(`Due date changed from ${task.dueDate} to ${dueDate} `);
+    }
+    if (status && status !== task.status) {
+      changes.push(`status changed from ${task.status} to ${status} `);
+    }
+    if (priority && priority !== task.priority) {
+      changes.push(`priority changed from ${task.priority} to ${priority} `);
+    }
+    // if (comments && comments.length !== task.comments.length) {
+    //   changes.push(`new Comment got added by ${comments?.[0].comment}`);
+    // }
+
     if (role === "ADMIN") {
       const result = await TaskModel.updateOne(
         {
@@ -36,6 +59,9 @@ const updateTaskById = async (req, res, next) => {
         },
         {
           $set: { ...filter },
+          $push: {
+            taskHistory: { changes: changes.join(","), user: req.user._id },
+          },
         }
       );
       return res.status(200).json(result);
@@ -58,7 +84,6 @@ const updateTaskById = async (req, res, next) => {
           $set: filter,
         }
       );
-      console.log({ result });
       return res.status(200).json(result);
     }
   } catch (err) {
