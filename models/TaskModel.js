@@ -51,8 +51,10 @@ const TaskSchema = Schema(
     subTasks: [SubTasksSchema],
 
     //	Keep a log of changes made to tasks.
-
     taskHistory: [TaskHistorySchema],
+
+    //Labels and Tags
+    labels: [{ type: Schema.Types.ObjectId, ref: "labels", required: false }],
   },
   { timestamps: true }
 );

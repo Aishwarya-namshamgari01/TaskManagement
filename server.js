@@ -5,6 +5,7 @@ import connectDB from "./db/connectDB.js";
 import { AuthRouter } from "./routes/authRoutes.js";
 import { CategoryRouter } from "./routes/categoryRoutes.js";
 import { TaskRouter } from "./routes/taskRoutes.js";
+import { LabelRouter } from "./routes/labelRouter.js";
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -14,6 +15,7 @@ connectDB();
 app.use(AuthRouter);
 app.use(CategoryRouter);
 app.use(TaskRouter);
+app.use(LabelRouter);
 
 dotenv.config();
 app.timeout = 0;

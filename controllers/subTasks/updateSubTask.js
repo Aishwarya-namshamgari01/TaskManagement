@@ -22,7 +22,6 @@ const updateSubTask = async (req, res, next) => {
       },
       { new: true }
     );
-    console.log({ updatedResult });
     res.status(200).json(updatedResult);
   } catch (err) {
     res.status(500).json(err);
