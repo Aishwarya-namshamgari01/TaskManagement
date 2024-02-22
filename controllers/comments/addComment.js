@@ -1,5 +1,6 @@
 import { matchedData } from "express-validator";
 import TaskModel from "../../models/TaskModel.js";
+import notify from "../notifications.js/notify.js";
 
 const addComment = async (req, res, next) => {
   try {
@@ -21,6 +22,7 @@ const addComment = async (req, res, next) => {
           new: true,
         }
       );
+      notify(user, `${user} added a new comment: ${comment}`);
       return res.status(200).json(updatedResult);
     } else {
       return res

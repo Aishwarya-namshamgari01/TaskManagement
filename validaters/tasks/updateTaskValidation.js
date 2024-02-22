@@ -17,13 +17,15 @@ const updateTaskValidation = [
     .optional()
     .custom(async (status, { req }) => {
       const { dependencies } = req.body;
-      const completed = dependencies.every((item) => {
-        return item.status === "completed";
-      });
-      if (status === "completed" && !completed) {
-        return Promise.reject(
-          "All the dependencies should be completed. then only you can move this to completed"
-        );
+      if (dependencies) {
+        const completed = dependencies?.every((item) => {
+          return item.status === "completed";
+        });
+        if (status === "completed" && !completed) {
+          return Promise.reject(
+            "All the dependencies should be completed. then only you can move this to completed"
+          );
+        }
       }
     }),
   body("priority").isIn(["low", "medium", "high"]).optional(),

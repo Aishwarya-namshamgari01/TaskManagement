@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1 id="hey">Hello World</h1>
+    <h1 id="custom">abc</h1>
+    <h1 id="broadcast">broadcast</h1>
+
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+    <script>
+      const socket = io();
+      socket.on("message", (data) => {
+        document.getElementById("hey").innerHTML = data;
+      });
+      socket.on("chatMessage", (data) => {
+        document.getElementById("custom").innerHTML = data;
+      });
+      socket.emit("clientEvent", "my client side event");
+
+      //This is for broadcasting 
+    //   socket.on("broadcast", (data) => {
+    //     document.getElementById("broadcast").innerHTML = data.msg;
+    //   });
+
+      socket.on("newUser", (data) => {
+        document.getElementById("broadcast").innerHTML = data.msg;
+      })
+
+
+      
+    </script>
+  </body>
+</html>
