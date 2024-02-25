@@ -48,61 +48,33 @@ const updateTaskById = async (req, res, next) => {
         `Task priority changed from ${task.priority} to ${priority} `
       );
     }
-    // if (comments && comments.length !== task.comments.length) {
-    //   changes.push(`new Comment got added by ${comments?.[0].comment}`);
-    // }
-
-    if (role === "ADMIN") {
-      const result = await TaskModel.updateOne(
-        {
-          _id: taskId,
-        },
-        {
-          $set: { ...filter },
-          $push: {
-            taskHistory: { changes: changes.join(","), user: req.user._id },
-          },
-        }
-      );
-      return res.status(200).json(result);
-    }
-    if (role === "USER") {
-      const assignedUser = await TaskModel.findOne({
+    const result = await TaskModel.updateOne(
+      {
         _id: taskId,
-        userId: req.user._id,
+        ...(role === "USER" && { userId: req.user._id }),
+      },
+      {
+        $set: filter,
+      }
+    );
+    if (changes) {
+      changes.map(async (change) => {
+        notify(req?.user?._id, change);
       });
-      if (!assignedUser)
-        return res
-          .status(400)
-          .json({ msg: "Task needs to be assigned to user before updation" });
-      const result = await TaskModel.updateOne(
-        {
-          _id: taskId,
-          userId: req.user._id,
-        },
-        {
-          $set: filter,
-        }
-      );
-      if (changes) {
-        changes.map(async (change) => {
-          notify(req?.user?._id, change);
-        });
-      }
-      if (dueDate) {
-        const daysUntillDue = Math.round(
-          (Date.now() - dueDate) / (1000 * 60 * 60 * 24)
-        );
-        if (daysUntillDue >= 2) {
-          notify(
-            req?.user?._id,
-            `Reminder: The deadline for '${task.name}' is approaching. It's due in ${daysUntillDue} day(s).`
-          );
-        }
-      }
-
-      return res.status(200).json(result);
     }
+    if (dueDate) {
+      const daysUntillDue = Math.round(
+        (Date.now() - dueDate) / (1000 * 60 * 60 * 24)
+      );
+      if (daysUntillDue >= 2) {
+        notify(
+          req?.user?._id,
+          `Reminder: The deadline for '${task.name}' is approaching. It's due in ${daysUntillDue} day(s).`
+        );
+      }
+    }
+
+    return res.status(200).json(result);
   } catch (err) {
     return res.status(500).json(err);
   }

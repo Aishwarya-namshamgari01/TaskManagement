@@ -2,7 +2,7 @@ import { param } from "express-validator";
 import UserModel from "../../models/UserModel.js";
 import mongoose from "mongoose";
 
-const deleteUserValidation = [
+const userIdValidation = [
   param("userId")
     .notEmpty()
     .custom(async (userId, req) => {
@@ -14,4 +14,4 @@ const deleteUserValidation = [
       }
     }),
 ];
-export default deleteUserValidation;
+export default userIdValidation;

@@ -11,7 +11,9 @@ import deleteUserById from "../controllers/users/deleteUserById.js";
 import uploadSingleFile from "../helpers/uploadSingleFile.js";
 import createAdmin from "../controllers/auth/createAdmin.js";
 import updateUserValidation from "../validaters/users/updateUserValidation.js";
-import deleteUserValidation from "../validaters/users/deleteUserValidation.js";
+import authorizeRole from "../helpers/authorizeRole.js";
+import userIdValidation from "../validaters/users/userIdValidation.js";
+import getUserById from "../controllers/users/getUserById.js";
 
 const router = Router();
 
@@ -21,6 +23,10 @@ router.post(
   uploadSingleFile,
   createUserValidation,
   validationErrorHandler,
+  authorizeRole({
+    allowedRoles: ["ADMIN"],
+    errorMessage: "Only ADMIN can create users",
+  }),
   registration
 );
 
@@ -34,20 +40,51 @@ router.post(
 
 router.post("/login", loginValidation, validationErrorHandler, login);
 
-router.get("/getAllUsers", verifyToken, getAllUsers);
+router.get(
+  "/getAllUsers",
+  verifyToken,
+  authorizeRole({
+    allowedRoles: ["ADMIN"],
+    errorMessage: "Please login as ADMIN to view users list",
+  }),
+  getAllUsers
+);
+
+router.get(
+  "/getUserById/:userId",
+  verifyToken,
+  userIdValidation,
+  validationErrorHandler,
+  authorizeRole({
+    allowedRoles: ["ADMIN", "USER"],
+    errorMessage: "Only admin or own user can view details",
+    verifyOwnUser: true,
+  }),
+  getUserById
+);
+
 router.patch(
   "/updateUserById/:userId",
   verifyToken,
   uploadSingleFile,
   updateUserValidation,
   validationErrorHandler,
+  authorizeRole({
+    allowedRoles: ["ADMIN", "USER"],
+    errorMessage: "Only admin or own user can edit details",
+    verifyOwnUser: true,
+  }),
   updateUserById
 );
 router.delete(
   "/deleteUserById/:userId",
   verifyToken,
-  deleteUserValidation,
+  userIdValidation,
   validationErrorHandler,
+  authorizeRole({
+    allowedRoles: ["ADMIN"],
+    errorMessage: "Admin user can only delete users",
+  }),
   deleteUserById
 );
 export { router as AuthRouter };

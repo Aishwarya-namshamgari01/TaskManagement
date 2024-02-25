@@ -7,24 +7,20 @@ const updateCategoryById = async (req, res, next) => {
     const role = req.user.role;
     const requestedData = matchedData(req);
     const { name, description, color } = requestedData;
-    if (role === "ADMIN") {
-      const result = await CategoryModel.updateOne(
-        {
-          _id: categoryId,
+    const result = await CategoryModel.updateOne(
+      {
+        _id: categoryId,
+      },
+      {
+        $set: {
+          name: name,
+          description: description,
+          color: color,
+          icon: req?.file?.path,
         },
-        {
-          $set: {
-            name: name,
-            description: description,
-            color: color,
-            icon: req?.file?.path,
-          },
-        }
-      );
-      res.status(200).json(result);
-    } else {
-      res.status(401).json({ msg: "Only admin can able to update category" });
-    }
+      }
+    );
+    res.status(200).json(result);
   } catch (err) {
     res.status(500).json(err);
   }

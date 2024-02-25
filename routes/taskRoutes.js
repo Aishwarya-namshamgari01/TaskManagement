@@ -22,6 +22,7 @@ import createSubTaskValidation from "../validaters/subTasks/createSubTaskValidat
 import createSubTask from "../controllers/subTasks/createSubTask.js";
 import updateSubTask from "../controllers/subTasks/updateSubTask.js";
 import updateSubTaskValidation from "../validaters/subTasks/updateSubTaskValidation.js";
+import authorizeRole from "../helpers/authorizeRole.js";
 
 const router = Router();
 router.post(
@@ -30,9 +31,23 @@ router.post(
   uploadMultipleFiles,
   createTaskValidation,
   validationErrorHandler,
+  authorizeRole({
+    allowedRoles: ["ADMIN", "USER"],
+    errorMessage:
+      "Only admin or own userId should be present userId field to create task",
+    verifyOwnUser: true,
+  }),
   createTask
 );
-router.get("/getAllTasks", verifyToken, getAllTasks);
+router.get(
+  "/getAllTasks",
+  verifyToken,
+  authorizeRole({
+    allowedRoles: ["ADMIN", "USER"],
+    errorMessage: "Only admin or own user can view tasks",
+  }),
+  getAllTasks
+);
 router.get(
   "/getTaskById/:taskId",
   verifyToken,
@@ -46,6 +61,11 @@ router.patch(
   uploadMultipleFiles,
   updateTaskValidation,
   validationErrorHandler,
+  authorizeRole({
+    allowedRoles: ["ADMIN", "USER"],
+    errorMessage: "Only admin or assigned task owner can edit task",
+    verifyOwnUser: true,
+  }),
   updateTaskById
 );
 router.delete(
@@ -56,6 +76,7 @@ router.delete(
   deleteTaskById
 );
 
+//Mostly this api purpose same as getAlltasks
 router.get(
   "/getTasksByUserId/:userId",
   verifyToken,
@@ -77,6 +98,11 @@ router.post(
   verifyToken,
   assignTaskValidation,
   validationErrorHandler,
+  authorizeRole({
+    allowedRoles: ["ADMIN", "USER"],
+    errorMessage: "only Admin can assign task",
+    verifyOwnUser: true,
+  }),
   assignTask
 );
 

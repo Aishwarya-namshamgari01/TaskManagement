@@ -6,19 +6,14 @@ const createCategory = async (req, res, next) => {
     const role = req.user.role;
     const requestedData = matchedData(req);
     const { name, description, color } = requestedData;
-    console.log({ requestedData });
-    if (role === "ADMIN") {
-      const category = CategoryModel({
-        name: name,
-        description: description,
-        color: color,
-        icon: req?.file?.path,
-      });
-      const result = await category.save();
-      res.status(200).json({ msg: "Category created successfully" });
-    } else {
-      res.status(401).json({ msg: "Only admin can create categories" });
-    }
+    const category = CategoryModel({
+      name: name,
+      description: description,
+      color: color,
+      icon: req?.file?.path,
+    });
+    const result = await category.save();
+    res.status(200).json({ msg: "Category created successfully" });
   } catch (err) {
     res.status(500).json(err);
   }

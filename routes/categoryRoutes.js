@@ -10,6 +10,7 @@ import createCategoryValidation from "../validaters/categories/createCategoryVal
 import validationErrorHandler from "../helpers/validationErrorHandler.js";
 import updateCategoryValidation from "../validaters/categories/updateCategoryValidation.js";
 import categoryIdValidation from "../validaters/categories/categoryIdValidation.js";
+import authorizeRole from "../helpers/authorizeRole.js";
 
 const router = Router();
 router.post(
@@ -18,6 +19,10 @@ router.post(
   uploadSingleFile,
   createCategoryValidation,
   validationErrorHandler,
+  authorizeRole({
+    allowedRoles: ["ADMIN"],
+    errorMessage: "Only admin can create categories",
+  }),
   createCategory
 );
 router.get("/getAllCategories", verifyToken, getAllCategories);
@@ -34,6 +39,10 @@ router.patch(
   uploadSingleFile,
   updateCategoryValidation,
   validationErrorHandler,
+  authorizeRole({
+    allowedRoles: ["ADMIN"],
+    errorMessage: "Only admin can able to update category",
+  }),
   updateCategoryById
 );
 router.delete(
@@ -41,6 +50,10 @@ router.delete(
   verifyToken,
   categoryIdValidation,
   validationErrorHandler,
+  authorizeRole({
+    allowedRoles: ["ADMIN"],
+    errorMessage: "Only admin can able to delete category",
+  }),
   deleteCategoryById
 );
 

@@ -29,24 +29,32 @@ const getAllTasks = async (req, res, next) => {
       limit = req?.query?.limit;
     }
 
-    if (role === "ADMIN") {
-      //Task Statistics and Reporting
-      const totalTasks = await TaskModel.countDocuments();
-      const pendingTasks = await TaskModel.countDocuments({
-        status: "pending",
-      });
-      const inProgressTasks = await TaskModel.countDocuments({
-        status: "inProgress",
-      });
-      const completedTasks = await TaskModel.countDocuments({
-        status: "completed",
-      });
+    //Task Statistics and Reporting
+    const totalTasks = await TaskModel.countDocuments({
+      ...(role === "USER" && { userId: req.user._id }),
+    });
+    const pendingTasks = await TaskModel.countDocuments({
+      status: "pending",
+      ...(role === "USER" && { userId: req.user._id }),
+    });
+    const inProgressTasks = await TaskModel.countDocuments({
+      status: "inProgress",
+      ...(role === "USER" && { userId: req.user._id }),
+    });
+    const completedTasks = await TaskModel.countDocuments({
+      status: "completed",
+      ...(role === "USER" && { userId: req.user._id }),
+    });
 
-      const highPriorityTasks = await TaskModel.countDocuments({
-        priority: "high",
-      });
+    const highPriorityTasks = await TaskModel.countDocuments({
+      priority: "high",
+      ...(role === "USER" && { userId: req.user._id }),
+    });
 
-      TaskModel.find({ ...filterObj })
+      TaskModel.find({
+        ...(role === "USER" && { userId: req.user._id }),
+        ...filterObj,
+      })
         .skip(skip)
         .limit(limit)
         .sort({ updatedAt: -1 })
@@ -63,46 +71,6 @@ const getAllTasks = async (req, res, next) => {
         .catch((err) => {
           res.status(500).json(err);
         });
-    } else if (role === "USER") {
-      //Task Statistics and Reporting
-      const totalTasks = await TaskModel.countDocuments({
-        userId: req.user._id,
-      });
-      const pendingTasks = await TaskModel.countDocuments({
-        status: "pending",
-        userId: req.user._id,
-      });
-      const inProgressTasks = await TaskModel.countDocuments({
-        status: "inProgress",
-        userId: req.user._id,
-      });
-      const completedTasks = await TaskModel.countDocuments({
-        status: "completed",
-        userId: req.user._id,
-      });
-
-      const highPriorityTasks = await TaskModel.countDocuments({
-        priority: "high",
-        userId: req.user._id,
-      });
-
-      TaskModel.find({ userId: req.user._id, ...filterObj })
-        .then((tasks) => {
-          res.status(200).json({
-            tasks: tasks,
-            totalTasks,
-            pendingTasks,
-            inProgressTasks,
-            completedTasks,
-            highPriorityTasks,
-          });
-        })
-        .catch((err) => {
-          res.status(500).json(err);
-        });
-    } else {
-      res.status(401).json({ msg: "only Admin can view all the tasks" });
-    }
   } catch (err) {
     res.status(500).json({ msg: "Something went wrong" });
   }

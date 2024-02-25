@@ -11,22 +11,16 @@ const getAllUsers = (req, res, next) => {
     }
 
     const role = req.user.role;
-    if (role === "ADMIN") {
-      UserModel.find()
-        .skip(skip)
-        .limit(limit)
-        .sort({ updatedAt: -1 })
-        .then((users) => {
-          res.status(200).json({ users });
-        })
-        .catch((err) => {
-          res.status(500).json(err);
-        });
-    } else {
-      res
-        .status(401)
-        .json({ msg: "Please login as admin to view users list " });
-    }
+    UserModel.find()
+      .skip(skip)
+      .limit(limit)
+      .sort({ updatedAt: -1 })
+      .then((users) => {
+        res.status(200).json({ users });
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
   } catch (err) {
     res.status(500).json({ err: "Something went wrong" });
   }

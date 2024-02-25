@@ -12,6 +12,7 @@ const updateUserValidation = [
       if (!user) {
         return Promise.reject("Unable to find user with that id");
       }
+      
     }),
   body("name").optional(),
   body("email").optional(),

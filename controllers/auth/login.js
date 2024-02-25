@@ -8,9 +8,14 @@ const login = async (req, res, next) => {
     const email = requestedData.email;
     const password = requestedData.password;
     const user = await UserModel.findOne({ email: email });
-    if (!user) {
-      res.status(400).json({ msg: "User doesnot exists with email" });
-      return;
+    // if (!user) {
+    //   res.status(400).json({ msg: "User doesnot exists with email" });
+    //   return;
+    // }
+    if (!user || !user.isVerified) {
+      return res
+        .status(401)
+        .json({ error: "Invalid login credentials or email not verified" });
     }
     const validPassword = compareSync(password, user.password);
     if (!validPassword) {
