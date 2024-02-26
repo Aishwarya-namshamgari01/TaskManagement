@@ -17,6 +17,9 @@ const server = createServer(app);
 //socket connections
 // const io = new Server(server);
 
+// set the view engine to ejs
+app.set("view engine", "ejs");
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 dotenv.config();

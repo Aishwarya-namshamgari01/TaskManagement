@@ -13,7 +13,6 @@ const verifyEmailToken = async (req, res, next) => {
         console.log({ decoded });
         if (decoded) {
           const user = await UserModel.findOne({ _id: decoded.userId });
-          console.log({ user }, { verof: !user || !user.isVerified });
           if (!user || user.isVerified)
             return res.status(404).json({
               error: "Invalid verification token or user already verified",

@@ -1,9 +1,11 @@
-import nodemailer from "nodemailer";
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  host: "smtp.gmail.com",
-  auth: { user: "example@gmail.com", pass: "example" },
-});
+// import nodemailer from "nodemailer";
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   host: "smtp.gmail.com",
+//   auth: { user: "example@gmail.com", pass: "example" },
+// });
+import transporter from "../transporter.js";
+
 const sendVerificationEmail = (email, token) => {
   const verificationLink = `http://localhost:3000/verify/${token}`;
   const mailOptions = {

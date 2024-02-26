@@ -1,6 +1,7 @@
 import { matchedData } from "express-validator";
 import UserModel from "../../models/UserModel.js";
 import { hashSync } from "bcrypt";
+import sendVerificationEmail from "../../helpers/emails/sendVerificationEmail.js";
 
 const createAdmin = async (req, res, next) => {
   try {
@@ -20,6 +21,17 @@ const createAdmin = async (req, res, next) => {
       role: "ADMIN",
     });
     const result = await user.save();
+    const token = jwt.sign(
+      {
+        userId: result?._id,
+        verifyEmail: true,
+      },
+      process.env.REGISTRATION_SECRET_KEY,
+      { expiresIn: 24000 }
+    );
+
+    sendVerificationEmail(requestedData.email, token);
+
     res.status(200).json({ msg: "ADMIN user created successfully" });
   } catch (err) {
     res.status(500).json(err);
