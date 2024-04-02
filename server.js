@@ -11,6 +11,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { CommonRouter } from "./routes/commonRoutes.js";
 import notificationSocketConnection from "./sockets/notificationSocketConnection.js";
+import cors from 'cors'
 
 const app = express();
 const server = createServer(app);
@@ -22,6 +23,7 @@ app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
 dotenv.config();
 connectDB();
 app.use(AuthRouter);

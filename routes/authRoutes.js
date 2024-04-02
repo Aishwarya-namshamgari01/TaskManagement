@@ -19,14 +19,14 @@ const router = Router();
 
 router.post(
   "/register",
-  verifyToken,
+  // verifyToken,
   uploadSingleFile,
   createUserValidation,
   validationErrorHandler,
-  authorizeRole({
-    allowedRoles: ["ADMIN"],
-    errorMessage: "Only ADMIN can create users",
-  }),
+  // authorizeRole({
+  //   allowedRoles: ["ADMIN", "USER"],
+  //   errorMessage: "Only ADMIN can create users",
+  // }),
   registration
 );
 
@@ -43,10 +43,10 @@ router.post("/login", loginValidation, validationErrorHandler, login);
 router.get(
   "/getAllUsers",
   verifyToken,
-  authorizeRole({
-    allowedRoles: ["ADMIN"],
-    errorMessage: "Please login as ADMIN to view users list",
-  }),
+  // authorizeRole({
+  //   allowedRoles: ["ADMIN"],
+  //   errorMessage: "Please login as ADMIN to view users list",
+  // }),
   getAllUsers
 );
 

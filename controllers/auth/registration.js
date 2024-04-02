@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 
 const registration = async (req, res, next) => {
   try {
-    const role = req.user.role;
+    // const role = req.user.role;
     const requestedData = matchedData(req);
     const userExists = await UserModel.findOne({
       email: requestedData.email,
