@@ -11,7 +11,7 @@ import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { CommonRouter } from "./routes/commonRoutes.js";
 import notificationSocketConnection from "./sockets/notificationSocketConnection.js";
-import cors from 'cors'
+import cors from "cors";
 
 const app = express();
 const server = createServer(app);
@@ -51,6 +51,6 @@ app.use("/room", (req, res, next) => {
 notificationSocketConnection(server);
 
 app.timeout = 0;
-server.listen(3000, () => {
+server.listen(10000, () => {
   console.log("listening");
 });
